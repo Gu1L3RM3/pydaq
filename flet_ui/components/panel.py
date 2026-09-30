@@ -1,0 +1,39 @@
+"""Reusable panel primitives."""
+
+from __future__ import annotations
+
+import flet as ft
+
+from theme import BORDER, CARD_RADIUS, MUTED, NAVY, SPACE_LG, SURFACE
+
+
+class PanelCard(ft.Container):
+    """A bordered surface with an optional title and description."""
+
+    def __init__(
+        self,
+        content: ft.Control,
+        *,
+        title: str | None = None,
+        description: str | None = None,
+        padding: int = SPACE_LG,
+        expand: bool | int | None = None,
+    ) -> None:
+        controls: list[ft.Control] = []
+        if title is not None:
+            controls.append(
+                ft.Text(title, size=20, weight=ft.FontWeight.BOLD, color=NAVY)
+            )
+        if description is not None:
+            controls.append(ft.Text(description, size=14, color=MUTED))
+        if controls:
+            controls.append(ft.Container(height=8))
+        controls.append(content)
+        super().__init__(
+            content=ft.Column(controls=controls, spacing=2),
+            bgcolor=SURFACE,
+            border=ft.Border.all(width=1, color=BORDER),
+            border_radius=CARD_RADIUS,
+            padding=padding,
+            expand=expand,
+        )
