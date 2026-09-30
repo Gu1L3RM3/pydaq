@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "pydaq"
 version = "0.0.7.1"
 license = { file = "LICENSE" }
-requires-python = ">=3.8"
+requires-python = ">=3.10,<3.13"
 keywords = ["Python", "Data Acquisition", "Arduino", "NIDAQ"]
 authors = [
   { name="Samir Angelo Milani Martins", email="milani.martins@gmail.com" },
@@ -30,10 +30,20 @@ classifiers = [
     "Operating System :: OS Independent",
 
 ]
-dependencies = ["numpy", "nidaqmx", "matplotlib",
-    "pyserial", "packaging", "PySide6",
-    "PySide6_Addons", "PySide6_Essentials", "shiboken6", "sysidentpy>=0.4.1", "bitarray", "scipy",
-    "importlib-resources; python_version < '3.9'"]
+dependencies = [
+    "numpy",
+    "nidaqmx",
+    "matplotlib",
+    "pyserial",
+    "packaging",
+    "PySide6>=6.7",
+    "sysidentpy>=0.4.1",
+    "bitarray",
+    "scipy",
+    "importlib-resources; python_version < '3.9'",
+    "flet (>=1.0.0,<2.0.0)",
+    "flet-charts>=1.0.0,<2.0.0",
+]
 
 [project.urls]
 homepage = "https://pydaq.org/"

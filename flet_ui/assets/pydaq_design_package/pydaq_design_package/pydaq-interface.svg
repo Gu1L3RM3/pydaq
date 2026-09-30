@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="944" viewBox="0 0 1680 944">
+  <defs>
+    <style>
+      text{font-family:Arial,sans-serif;fill:#102342}.h1{font-size:44px;font-weight:700}.h2{font-size:25px;font-weight:700}.body{font-size:17px}.small{font-size:14px}.muted{fill:#71809A}.nav{font-size:17px;font-weight:600}.label{font-size:16px;font-weight:600}.white{fill:#fff}.accent{fill:#B56C70}
+    </style>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#F7F9FC"/></linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="8" stdDeviation="18" flood-color="#102342" flood-opacity=".06"/></filter>
+    <clipPath id="chartClip"><rect x="824" y="252" width="804" height="535"/></clipPath>
+  </defs>
+  <rect width="1680" height="944" fill="url(#bg)"/>
+
+  <!-- Sidebar -->
+  <g id="sidebar">
+    <rect width="208" height="944" fill="#FFFFFF"/>
+    <line x1="208" y1="0" x2="208" y2="944" stroke="#DFE5EF"/>
+    <g id="logo" transform="translate(40 25)">
+      <path d="M3 14V3h114v11M58 3v-1" fill="none" stroke="#B56C70" stroke-width="5" stroke-linecap="round"/>
+      <text x="0" y="57" font-size="39" font-weight="300" letter-spacing="-2">PYDAQ</text>
+      <path d="M4 76h112M58 76v13M43 89h30" fill="none" stroke="#B56C70" stroke-width="4" stroke-linecap="round"/>
+    </g>
+    <g id="nav-items">
+      <rect x="9" y="145" width="190" height="54" rx="8" fill="#F8EFF0"/>
+      <rect x="9" y="145" width="5" height="54" rx="3" fill="#B56C70"/>
+      <g transform="translate(31 161)" fill="#B56C70"><rect x="0" y="11" width="5" height="14" rx="1"/><rect x="11" y="5" width="5" height="20" rx="1"/><rect x="22" y="0" width="5" height="25" rx="1"/></g>
+      <text class="nav accent" x="74" y="179">Get Data</text>
+      <text x="31" y="236" font-size="27" fill="#71809A">➤</text><text class="body muted" x="74" y="237">Send Data</text>
+      <text x="31" y="300" font-size="27" fill="#71809A">〽</text><text class="body muted" x="74" y="299">Step Response</text>
+      <text x="31" y="362" font-size="27" fill="#71809A">◇</text><text class="body muted" x="74" y="361">Get Model</text>
+      <text x="31" y="423" font-size="27" fill="#71809A">☷</text><text class="body muted" x="74" y="422">PID Control</text>
+      <text x="31" y="484" font-size="27" fill="#71809A">⌘</text><text class="body muted" x="74" y="483">LQR Control</text>
+    </g>
+    <g id="sidebar-footer">
+      <text class="small muted" x="23" y="850">PYDAQ</text><text x="23" y="872" font-size="12" class="muted">Laboratory Data Acquisition</text>
+      <line x1="23" y1="885" x2="134" y2="885" stroke="#B56C70" stroke-width="2"/><text x="23" y="910" font-size="12" class="muted">v1.0.0</text>
+    </g>
+  </g>
+
+  <!-- Main header -->
+  <g id="header">
+    <text class="h1" x="238" y="67">Data acquisition</text>
+    <text x="238" y="103" font-size="19" class="muted">Acquire and visualize real-time data from your device.</text>
+    <g id="device-tabs">
+      <rect x="1333" y="70" width="151" height="45" rx="9" fill="#B56C70"/>
+      <circle cx="1367" cy="92" r="11" fill="none" stroke="#fff" stroke-width="2"/><circle cx="1367" cy="92" r="6" fill="#fff"/>
+      <text class="body white" x="1391" y="99" font-weight="700">Arduino</text>
+      <rect x="1498" y="70" width="151" height="45" rx="9" fill="#fff" stroke="#DFE5EF"/>
+      <circle cx="1534" cy="92" r="11" fill="none" stroke="#71809A" stroke-width="2"/>
+      <text class="body" x="1559" y="99" font-weight="700">NI-DAQ</text>
+    </g>
+  </g>
+
+  <!-- Setup card -->
+  <g id="acquisition-card" filter="url(#shadow)">
+    <rect x="222" y="138" width="511" height="772" rx="12" fill="#fff" stroke="#DFE5EF"/>
+    <text class="h2" x="246" y="183">Acquisition setup</text>
+    <text class="body muted" x="246" y="209">Configure your device and acquisition parameters.</text>
+    <g id="form-fields">
+      <text class="label" x="246" y="258">Device</text><rect x="246" y="268" width="463" height="41" rx="8" fill="#FAFBFD" stroke="#CBD4E1"/><text class="body" x="261" y="294">COM3 · Arduino Uno</text><text x="680" y="294" font-size="20">⌄</text>
+      <text class="label" x="246" y="342">AI channels</text><rect x="246" y="352" width="463" height="41" rx="8" fill="#FAFBFD" stroke="#CBD4E1"/><text class="body" x="261" y="378">A0, A1</text><text x="680" y="378" font-size="20">⌄</text>
+      <text class="label" x="246" y="426">Sample period (s)</text><rect x="246" y="436" width="463" height="41" rx="8" fill="#FAFBFD" stroke="#CBD4E1"/><text class="body" x="261" y="462">0.010</text><text x="681" y="452" font-size="12">⌃</text><text x="681" y="468" font-size="12">⌄</text>
+      <text class="label" x="246" y="510">Session duration (s)</text><rect x="246" y="520" width="463" height="41" rx="8" fill="#FAFBFD" stroke="#CBD4E1"/><text class="body" x="261" y="546">100</text><text x="681" y="536" font-size="12">⌃</text><text x="681" y="552" font-size="12">⌄</text>
+    </g>
+    <g id="controls">
+      <text class="label" x="246" y="602">Digital filter?</text><rect x="392" y="578" width="54" height="31" rx="16" fill="#AAB5C5"/><circle cx="408" cy="593" r="12" fill="#fff"/><text class="body" x="456" y="601">No</text>
+      <text class="label" x="246" y="655">Plot data?</text><rect x="392" y="625" width="317" height="43" rx="8" fill="#FAFBFD" stroke="#CBD4E1"/><rect x="392" y="625" width="111" height="43" rx="8" fill="#B56C70"/><line x1="503" y1="625" x2="503" y2="668" stroke="#CBD4E1"/><line x1="613" y1="625" x2="613" y2="668" stroke="#CBD4E1"/><text class="small white" x="414" y="652" font-weight="700">Real time</text><text class="small" x="522" y="652">At the end</text><text class="small" x="645" y="652">Off</text>
+      <text class="label" x="246" y="710">Save data?</text><rect x="392" y="687" width="54" height="31" rx="16" fill="#AAB5C5"/><circle cx="408" cy="702" r="12" fill="#fff"/><text class="body" x="456" y="710">No</text>
+      <text class="label" x="246" y="750">Path</text><rect x="246" y="760" width="367" height="39" rx="8" fill="#FAFBFD" stroke="#CBD4E1"/><text class="body" x="261" y="785">~/Documents/PYDAQ</text><line x1="566" y1="760" x2="566" y2="799" stroke="#DFE5EF"/><text x="579" y="786" font-size="19">▢</text><rect x="621" y="760" width="88" height="39" rx="8" fill="#F1F4F8" stroke="#DFE5EF"/><text class="small" x="639" y="784" font-weight="700">Browse</text>
+    </g>
+    <line x1="246" y1="818" x2="709" y2="818" stroke="#DFE5EF"/>
+    <rect x="246" y="829" width="463" height="58" rx="8" fill="#B56C70"/><text x="386" y="866" font-size="23" class="white">▶</text><text x="421" y="866" font-size="18" class="white" font-weight="700">Start acquisition</text>
+  </g>
+
+  <!-- Live signal card -->
+  <g id="live-signal-card" filter="url(#shadow)">
+    <rect x="742" y="138" width="916" height="772" rx="12" fill="#fff" stroke="#DFE5EF"/>
+    <text class="h2" x="766" y="183">Live signal</text><text class="body muted" x="766" y="209">Real-time data from analog input channels.</text>
+    <circle cx="1397" cy="183" r="8" fill="#148A2E"/><text x="1416" y="190" font-size="16" fill="#148A2E">Connected</text><line x1="1517" y1="171" x2="1517" y2="195" stroke="#DFE5EF"/><text x="1540" y="191" font-size="22">⌁</text><text class="body" x="1576" y="190">100 Hz</text>
+    <g id="chart-grid" stroke="#DFE5EF" stroke-width="1">
+      <rect x="824" y="252" width="804" height="535" fill="#fff"/>
+      <path d="M824 252H1628M824 341H1628M824 430H1628M824 519H1628M824 608H1628M824 697H1628M824 787H1628"/>
+      <path d="M824 252V787M899 252V787M975 252V787M1051 252V787M1126 252V787M1202 252V787M1277 252V787M1353 252V787M1428 252V787M1504 252V787M1579 252V787M1628 252V787"/>
+    </g>
+    <g id="axis-labels" class="small muted">
+      <text x="804" y="257">6</text><text x="804" y="346">4</text><text x="804" y="435">2</text><text x="807" y="524">0</text><text x="799" y="613">-2</text><text x="799" y="702">-4</text><text x="799" y="792">-6</text>
+      <text x="820" y="818">0</text><text x="891" y="818">10</text><text x="967" y="818">20</text><text x="1043" y="818">30</text><text x="1118" y="818">40</text><text x="1194" y="818">50</text><text x="1269" y="818">60</text><text x="1345" y="818">70</text><text x="1420" y="818">80</text><text x="1496" y="818">90</text><text x="1567" y="818">100</text>
+    </g>
+    <g id="legend"><rect x="1461" y="264" width="156" height="35" rx="8" fill="#fff" stroke="#DFE5EF"/><line x1="1472" y1="281" x2="1504" y2="281" stroke="#087FF5" stroke-width="3"/><text class="small" x="1511" y="286">A0</text><line x1="1548" y1="281" x2="1580" y2="281" stroke="#11A89C" stroke-width="3"/><text class="small" x="1587" y="286">A1</text></g>
+    <g id="signals" clip-path="url(#chartClip)" fill="none" stroke-linecap="round">
+      <path d="M824 654 C855 537 875 397 915 347 S979 371 1004 489 S1050 714 1090 689 S1144 474 1180 367 S1246 362 1270 480 S1321 714 1362 685 S1416 452 1455 359 S1520 377 1545 506 S1591 726 1628 632" stroke="#087FF5" stroke-width="3"/>
+      <path d="M824 608 C862 596 884 525 923 459 S994 440 1030 500 S1084 626 1129 605 S1183 494 1225 448 S1296 472 1330 538 S1392 628 1432 580 S1490 458 1527 447 S1590 531 1628 603" stroke="#11A89C" stroke-width="3"/>
+    </g>
+    <text class="body" x="1187" y="861">Time (s)</text><text class="body" transform="translate(775 551) rotate(-90)">Voltage (V)</text>
+  </g>
+</svg>

@@ -15,7 +15,7 @@ from components.form_controls import (
     ToggleSetting,
 )
 from components.panel import PanelCard
-from theme import ACCENT, ACCENT_DARK, BORDER, CONTROL_RADIUS, SPACE_MD
+from theme import ACCENT, ACCENT_DARK, BORDER, CONTROL_RADIUS
 
 AcquisitionCallback = Callable[[bool], None]
 
@@ -80,7 +80,8 @@ class AcquisitionSetupPanel(PanelCard):
                 ft.Divider(height=16, color=BORDER),
                 self._action,
             ],
-            spacing=SPACE_MD,
+            spacing=10,
+            horizontal_alignment=ft.CrossAxisAlignment.STRETCH,
         )
         super().__init__(
             form,

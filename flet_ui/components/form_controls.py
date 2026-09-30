@@ -55,6 +55,7 @@ class LabeledDropdown(ft.Column):
                 self.dropdown,
             ],
             spacing=6,
+            horizontal_alignment=ft.CrossAxisAlignment.STRETCH,
         )
 
     @property
@@ -95,6 +96,7 @@ class LabeledNumberField(ft.Column):
                 self.field,
             ],
             spacing=6,
+            horizontal_alignment=ft.CrossAxisAlignment.STRETCH,
         )
 
 
