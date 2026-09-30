@@ -57,8 +57,8 @@ def build_get_data_page() -> ft.Control:
         vertical_alignment=ft.CrossAxisAlignment.START,
     )
     return ft.Column(
-        controls=[header, ft.Container(height=8), content],
-        spacing=8,
+        controls=[header, ft.Container(height=4), content],
+        spacing=6,
         scroll=ft.ScrollMode.AUTO,
         expand=True,
     )

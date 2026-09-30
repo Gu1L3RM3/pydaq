@@ -40,21 +40,22 @@ class LabeledDropdown(ft.Column):
         self.dropdown = ft.Dropdown(
             value=value,
             options=[ft.DropdownOption(key=option, text=option) for option in options],
-            height=42,
+            height=36,
             text_size=14,
             color=NAVY,
             filled=True,
             fill_color=INPUT_FILL,
             border=_outline_border(),
-            content_padding=ft.Padding.symmetric(horizontal=12, vertical=4),
+            content_padding=ft.Padding.symmetric(horizontal=12, vertical=2),
             on_select=self._handle_select,
+            expand=True,
         )
         super().__init__(
             controls=[
                 ft.Text(label, size=14, weight=ft.FontWeight.W_500, color=NAVY),
-                self.dropdown,
+                ft.Row(controls=[self.dropdown], spacing=0),
             ],
-            spacing=6,
+            spacing=2,
             horizontal_alignment=ft.CrossAxisAlignment.STRETCH,
         )
 
@@ -81,21 +82,21 @@ class LabeledNumberField(ft.Column):
     def __init__(self, label: str, value: str) -> None:
         self.field = ft.TextField(
             value=value,
-            height=42,
+            height=36,
             text_size=14,
             color=NAVY,
             keyboard_type=ft.KeyboardType.NUMBER,
             filled=True,
             fill_color=INPUT_FILL,
             border=_outline_border(),
-            content_padding=ft.Padding.symmetric(horizontal=12, vertical=4),
+            content_padding=ft.Padding.symmetric(horizontal=12, vertical=2),
         )
         super().__init__(
             controls=[
                 ft.Text(label, size=14, weight=ft.FontWeight.W_500, color=NAVY),
                 self.field,
             ],
-            spacing=6,
+            spacing=2,
             horizontal_alignment=ft.CrossAxisAlignment.STRETCH,
         )
 
@@ -112,6 +113,7 @@ class ToggleSetting(ft.Row):
             inactive_thumb_color=ft.Colors.WHITE,
             inactive_track_color="#B8C1D0",
             on_change=self._handle_change,
+            height=32,
         )
         super().__init__(
             controls=[
@@ -149,7 +151,7 @@ class ChoiceTabs(ft.Row):
 
     def _build_segment(self, option: str) -> ft.Container:
         segment = ft.Container(
-            height=40,
+            height=32,
             expand=True,
             alignment=ft.Alignment.CENTER,
             border=ft.Border.all(width=1, color=BORDER),
@@ -189,19 +191,19 @@ class PathField(ft.Column):
         self._on_browse = on_browse
         self.field = ft.TextField(
             value=value,
-            height=42,
+            height=36,
             expand=True,
             text_size=14,
             color=NAVY,
             filled=True,
             fill_color=INPUT_FILL,
             border=_outline_border(),
-            content_padding=ft.Padding.symmetric(horizontal=12, vertical=4),
+            content_padding=ft.Padding.symmetric(horizontal=12, vertical=2),
             suffix_icon=ft.Icons.FOLDER_OUTLINED,
         )
         browse = ft.Button(
             "Browse",
-            height=42,
+            height=36,
             style=ft.ButtonStyle(
                 color=NAVY,
                 bgcolor="#F1F4F8",
@@ -215,7 +217,7 @@ class PathField(ft.Column):
                 ft.Text("Path", size=14, weight=ft.FontWeight.W_500, color=NAVY),
                 ft.Row(controls=[self.field, browse], spacing=SPACE_SM),
             ],
-            spacing=6,
+            spacing=2,
         )
 
     def _browse(self, _event: ft.Event[ft.Button]) -> None:

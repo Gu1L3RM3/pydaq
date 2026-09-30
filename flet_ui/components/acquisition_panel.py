@@ -42,7 +42,7 @@ class AcquisitionSetupPanel(PanelCard):
             weight=ft.FontWeight.W_600,
         )
         self._action = ft.Container(
-            height=56,
+            height=44,
             bgcolor=ACCENT,
             border_radius=CONTROL_RADIUS,
             alignment=ft.Alignment.CENTER,
@@ -60,7 +60,6 @@ class AcquisitionSetupPanel(PanelCard):
                 self.channels,
                 LabeledNumberField("Sample period (s)", "0.010"),
                 LabeledNumberField("Session duration (s)", "100"),
-                ft.Container(height=2),
                 ToggleSetting("Digital filter?"),
                 ft.Row(
                     controls=[
@@ -77,16 +76,18 @@ class AcquisitionSetupPanel(PanelCard):
                 ),
                 ToggleSetting("Save data?"),
                 PathField("~/Documents/PYDAQ"),
-                ft.Divider(height=16, color=BORDER),
+                ft.Divider(height=4, color=BORDER),
                 self._action,
             ],
-            spacing=10,
+            spacing=3,
             horizontal_alignment=ft.CrossAxisAlignment.STRETCH,
         )
         super().__init__(
             form,
             title="Acquisition setup",
             description="Configure your device and acquisition parameters.",
+            padding=14,
+            header_gap=4,
         )
 
     def set_device_family(self, family: DeviceFamily) -> None:

@@ -17,6 +17,7 @@ class PanelCard(ft.Container):
         title: str | None = None,
         description: str | None = None,
         padding: int = SPACE_LG,
+        header_gap: int = 8,
         expand: bool | int | None = None,
     ) -> None:
         controls: list[ft.Control] = []
@@ -27,7 +28,7 @@ class PanelCard(ft.Container):
         if description is not None:
             controls.append(ft.Text(description, size=14, color=MUTED))
         if controls:
-            controls.append(ft.Container(height=8))
+            controls.append(ft.Container(height=header_gap))
         controls.append(content)
         super().__init__(
             content=ft.Column(controls=controls, spacing=2),
