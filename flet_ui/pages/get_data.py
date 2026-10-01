@@ -7,6 +7,7 @@ import flet as ft
 from components.acquisition_panel import AcquisitionSetupPanel
 from components.device_selector import DeviceSelector
 from components.live_chart import LiveSignalChart
+from pages.demo_devices import ACQUISITION_DEVICE_CHOICES
 from pydaq.core.acquisition import AcquisitionSource, SampleBatch
 from pydaq.devices.simulated import SimulatedSource
 from services.acquisition_session import AcquisitionSession
@@ -18,7 +19,9 @@ class GetDataView(ft.Column):
 
     def __init__(self, source: AcquisitionSource) -> None:
         self._chart = LiveSignalChart()
-        self._panel = AcquisitionSetupPanel(on_acquisition_change=self._request_acquisition)
+        self._panel = AcquisitionSetupPanel(
+            ACQUISITION_DEVICE_CHOICES, on_acquisition_change=self._request_acquisition
+        )
         self._session = AcquisitionSession(
             source,
             on_batch=self._show_batch,
