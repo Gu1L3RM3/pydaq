@@ -6,7 +6,6 @@ from collections.abc import Callable
 
 import flet as ft
 
-from components.device_selector import DeviceFamily
 from components.form_controls import (
     ChoiceTabs,
     LabeledDropdown,
@@ -15,17 +14,24 @@ from components.form_controls import (
     ToggleSetting,
 )
 from components.panel import PanelCard
+from pydaq.core.acquisition import AcquisitionConfig, DeviceFamily
+from services.acquisition_form import build_acquisition_config
 from theme import ACCENT, ACCENT_DARK, BORDER, CONTROL_RADIUS
 
 AcquisitionCallback = Callable[[bool], None]
 
 
 class AcquisitionSetupPanel(PanelCard):
-    """Device settings and primary acquisition action."""
+    """Device settings and primary acquisition action.
+
+    The action button only requests a change through ``on_acquisition_change``;
+    the host confirms it with ``set_running`` once the session starts or ends.
+    """
 
     def __init__(self, on_acquisition_change: AcquisitionCallback | None = None) -> None:
         self._on_acquisition_change = on_acquisition_change
         self._running = False
+        self._family = DeviceFamily.ARDUINO
         self.device = LabeledDropdown(
             "Device",
             options=("COM3 · Arduino Uno", "COM4 · Arduino Mega"),
@@ -34,6 +40,8 @@ class AcquisitionSetupPanel(PanelCard):
         self.channels = LabeledDropdown(
             "AI channels", options=("A0, A1", "A0", "A1"), value="A0, A1"
         )
+        self.sample_period = LabeledNumberField("Sample period (s)", "0.010")
+        self.duration = LabeledNumberField("Session duration (s)", "100")
         self._action_icon = ft.Icon(ft.Icons.PLAY_ARROW_ROUNDED, color=ft.Colors.WHITE)
         self._action_label = ft.Text(
             "Start acquisition",
@@ -58,8 +66,8 @@ class AcquisitionSetupPanel(PanelCard):
             controls=[
                 self.device,
                 self.channels,
-                LabeledNumberField("Sample period (s)", "0.010"),
-                LabeledNumberField("Session duration (s)", "100"),
+                self.sample_period,
+                self.duration,
                 ToggleSetting("Digital filter?"),
                 ft.Row(
                     controls=[
@@ -79,7 +87,7 @@ class AcquisitionSetupPanel(PanelCard):
                 ft.Divider(height=4, color=BORDER),
                 self._action,
             ],
-            spacing=3,
+            spacing=13,
             horizontal_alignment=ft.CrossAxisAlignment.STRETCH,
         )
         super().__init__(
@@ -92,6 +100,7 @@ class AcquisitionSetupPanel(PanelCard):
 
     def set_device_family(self, family: DeviceFamily) -> None:
         """Apply family-specific device and channel options."""
+        self._family = family
         if family is DeviceFamily.ARDUINO:
             self.device.set_options(
                 ("COM3 · Arduino Uno", "COM4 · Arduino Mega"),
@@ -102,15 +111,26 @@ class AcquisitionSetupPanel(PanelCard):
         self.device.set_options(("Dev1 · NI USB-6009", "Dev2 · NI-DAQ"), "Dev1 · NI USB-6009")
         self.channels.set_options(("ai0, ai1", "ai0", "ai1"), "ai0, ai1")
 
-    def _toggle_acquisition(self, _event: ft.Event[ft.Container]) -> None:
-        self._running = not self._running
+    def read_config(self) -> AcquisitionConfig:
+        """Return the form as a config; raises ``ValueError`` with a user message."""
+        return build_acquisition_config(
+            self._family,
+            self.device.value,
+            self.channels.value,
+            self.sample_period.field.value or "",
+            self.duration.field.value or "",
+        )
+
+    def set_running(self, running: bool) -> None:
+        """Show the start or stop action without notifying the host."""
+        self._running = running
         self._action_icon.icon = (
-            ft.Icons.STOP_ROUNDED if self._running else ft.Icons.PLAY_ARROW_ROUNDED
+            ft.Icons.STOP_ROUNDED if running else ft.Icons.PLAY_ARROW_ROUNDED
         )
-        self._action_label.value = (
-            "Stop acquisition" if self._running else "Start acquisition"
-        )
-        self._action.bgcolor = ACCENT_DARK if self._running else ACCENT
+        self._action_label.value = "Stop acquisition" if running else "Start acquisition"
+        self._action.bgcolor = ACCENT_DARK if running else ACCENT
         self.update()
+
+    def _toggle_acquisition(self, _event: ft.Event[ft.Container]) -> None:
         if self._on_acquisition_change is not None:
-            self._on_acquisition_change(self._running)
+            self._on_acquisition_change(not self._running)

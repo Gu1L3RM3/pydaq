@@ -3,17 +3,13 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from enum import Enum
 
 import flet as ft
 
+from pydaq.core.acquisition import DeviceFamily
 from theme import ACCENT, BORDER, CONTROL_RADIUS, MUTED, NAVY, SURFACE
 
-
-class DeviceFamily(str, Enum):
-    ARDUINO = "Arduino"
-    NI_DAQ = "NI-DAQ"
-
+FAMILY_LABELS = {DeviceFamily.ARDUINO: "Arduino", DeviceFamily.NIDAQ: "NI-DAQ"}
 
 DeviceCallback = Callable[[DeviceFamily], None]
 
@@ -57,7 +53,7 @@ class DeviceSelector(ft.Row):
                         alignment=ft.Alignment.CENTER,
                         content=ft.Container(width=10, height=10, border_radius=5),
                     ),
-                    ft.Text(family.value, size=14, weight=ft.FontWeight.W_500),
+                    ft.Text(FAMILY_LABELS[family], size=14, weight=ft.FontWeight.W_500),
                 ],
                 spacing=9,
                 tight=True,

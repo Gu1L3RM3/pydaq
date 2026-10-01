@@ -145,22 +145,36 @@ class ChoiceTabs(ft.Row):
         self.value = selected
         self._on_value_change = on_change
         self._segments: dict[str, ft.Container] = {}
-        controls = [self._build_segment(option) for option in options]
+        controls = [
+            self._build_segment(option, index, len(options))
+            for index, option in enumerate(options)
+        ]
         super().__init__(controls=controls, spacing=0, expand=True)
         self._refresh_styles()
 
-    def _build_segment(self, option: str) -> ft.Container:
+    def _build_segment(
+        self, option: str, index: int, total_options: int
+    ) -> ft.Container:
         segment = ft.Container(
             height=32,
             expand=True,
             alignment=ft.Alignment.CENTER,
             border=ft.Border.all(width=1, color=BORDER),
+            border_radius=self._segment_radius(index, total_options),
             on_click=lambda _event, choice=option: self.select(choice),
             ink=True,
             content=ft.Text(option, size=13, color=MUTED),
         )
         self._segments[option] = segment
         return segment
+
+    @staticmethod
+    def _segment_radius(index: int, total_options: int) -> ft.BorderRadius:
+        if index == 0:
+            return ft.BorderRadius.horizontal(left=CONTROL_RADIUS)
+        if index == total_options - 1:
+            return ft.BorderRadius.horizontal(right=CONTROL_RADIUS)
+        return ft.BorderRadius.all(0)
 
     def select(self, option: str) -> None:
         """Select one segment and notify consumers."""

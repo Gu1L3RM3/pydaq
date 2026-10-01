@@ -1,33 +1,40 @@
-"""Tests for reusable signal chart data preparation."""
+"""Tests for signal chart axis and label helpers."""
 
 from __future__ import annotations
 
 import pytest
 
-from components.live_chart import build_demo_series
-
-
-def test_build_demo_series_returns_aligned_channels() -> None:
-    first, second = build_demo_series(duration=10, point_count=5)
-
-    assert first.name == "A0"
-    assert second.name == "A1"
-    assert len(first.points) == len(second.points) == 5
-    assert first.points[0].time == second.points[0].time == 0
-    assert first.points[-1].time == second.points[-1].time == 10
+from components.live_chart import (
+    CHANNEL_COLORS,
+    channel_color,
+    format_sample_rate,
+    time_axis_ticks,
+)
 
 
 @pytest.mark.parametrize(
-    ("duration", "point_count", "message"),
+    ("duration_s", "expected"),
     [
-        (0, 5, "duration must be positive"),
-        (10, 1, "point_count must be at least 2"),
+        (100, tuple(range(0, 101, 10))),
+        (150, tuple(range(0, 141, 20))),
+        (7, tuple(range(0, 8))),
+        (0.5, (0,)),
     ],
 )
-def test_build_demo_series_rejects_invalid_ranges(
-    duration: float,
-    point_count: int,
-    message: str,
-) -> None:
-    with pytest.raises(ValueError, match=message):
-        build_demo_series(duration=duration, point_count=point_count)
+def test_time_axis_ticks_use_round_steps(duration_s: float, expected: tuple[int, ...]) -> None:
+    assert time_axis_ticks(duration_s) == expected
+
+
+def test_time_axis_ticks_reject_non_positive_duration() -> None:
+    with pytest.raises(ValueError, match="duration_s must be positive, received 0"):
+        time_axis_ticks(0)
+
+
+def test_format_sample_rate_inverts_period() -> None:
+    assert format_sample_rate(0.01) == "100 Hz"
+    assert format_sample_rate(0.4) == "2.5 Hz"
+
+
+def test_channel_color_cycles_through_palette() -> None:
+    assert channel_color(0) == CHANNEL_COLORS[0]
+    assert channel_color(len(CHANNEL_COLORS)) == CHANNEL_COLORS[0]
