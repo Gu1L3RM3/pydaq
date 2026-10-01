@@ -7,14 +7,15 @@ import flet as ft
 from components.acquisition_panel import AcquisitionSetupPanel
 from components.device_selector import DeviceSelector
 from components.live_chart import LiveSignalChart
+from components.page_header import PageHeader
+from components.workflow_layout import WorkflowLayout
 from pages.demo_devices import ACQUISITION_DEVICE_CHOICES
 from pydaq.core.acquisition import AcquisitionSource, SampleBatch
 from pydaq.devices.simulated import SimulatedSource
 from services.acquisition_session import AcquisitionSession
-from theme import MUTED, NAVY
 
 
-class GetDataView(ft.Column):
+class GetDataView(WorkflowLayout):
     """Get Data route: connects the setup panel and chart to one session."""
 
     def __init__(self, source: AcquisitionSource) -> None:
@@ -28,12 +29,12 @@ class GetDataView(ft.Column):
             on_finished=self._show_finished,
             on_error=self._show_error,
         )
-        super().__init__(
-            controls=_compose_layout(self._panel, self._chart),
-            spacing=6,
-            scroll=ft.ScrollMode.AUTO,
-            expand=True,
+        header = PageHeader(
+            "Data acquisition",
+            "Acquire and visualize real-time data from your device.",
+            trailing=DeviceSelector(on_change=self._panel.set_device_family),
         )
+        super().__init__(header, setup=self._panel, results=self._chart)
 
     def will_unmount(self) -> None:
         # Navigating away must not leave a device streaming into detached controls.
@@ -67,50 +68,3 @@ class GetDataView(ft.Column):
 def build_get_data_page(source: AcquisitionSource | None = None) -> ft.Control:
     """Get Data route; ``source`` defaults to simulated data until hardware adapters land."""
     return GetDataView(source or SimulatedSource())
-
-
-def _compose_layout(
-    setup_panel: AcquisitionSetupPanel, signal_chart: LiveSignalChart
-) -> list[ft.Control]:
-    """Compose the responsive data acquisition workflow."""
-    device_selector = DeviceSelector(on_change=setup_panel.set_device_family)
-
-    header = ft.ResponsiveRow(
-        controls=[
-            ft.Column(
-                col={"xs": 12, "md": 7},
-                controls=[
-                    ft.Text(
-                        "Data acquisition",
-                        size=32,
-                        weight=ft.FontWeight.BOLD,
-                        color=NAVY,
-                    ),
-                    ft.Text(
-                        "Acquire and visualize real-time data from your device.",
-                        size=16,
-                        color=MUTED,
-                    ),
-                ],
-                spacing=2,
-            ),
-            ft.Container(
-                col={"xs": 12, "md": 5},
-                alignment=ft.Alignment.CENTER_RIGHT,
-                content=device_selector,
-            ),
-        ],
-        spacing=8,
-        run_spacing=12,
-        vertical_alignment=ft.CrossAxisAlignment.CENTER,
-    )
-    content = ft.ResponsiveRow(
-        controls=[
-            ft.Container(col={"xs": 12, "lg": 4}, content=setup_panel),
-            ft.Container(col={"xs": 12, "lg": 8}, content=signal_chart),
-        ],
-        spacing=10,
-        run_spacing=12,
-        vertical_alignment=ft.CrossAxisAlignment.START,
-    )
-    return [header, ft.Container(height=4), content]
