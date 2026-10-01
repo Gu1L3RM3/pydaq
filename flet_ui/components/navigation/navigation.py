@@ -2,12 +2,25 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 
 import flet as ft
 
-from theme import ACCENT, ACCENT_SOFT, BORDER, MUTED, SIDEBAR_WIDTH, SURFACE
+from theme import (
+    ACCENT,
+    ACCENT_SOFT,
+    BORDER,
+    MUTED,
+    MUTED_LIGHT,
+    MUTED_LIGHTER,
+    SIDEBAR_WIDTH,
+    SURFACE,
+    TEXT_LABEL,
+    TEXT_SMALL,
+    TEXT_XSMALL,
+    TEXT_XXSMALL,
+)
 
 NavigationCallback = Callable[[int], None]
 
@@ -20,21 +33,16 @@ class NavigationItem:
     icon: ft.IconData
 
 
-NAVIGATION_ITEMS = (
-    NavigationItem("Get Data", ft.Icons.BAR_CHART_ROUNDED),
-    NavigationItem("Send Data", ft.Icons.SEND_OUTLINED),
-    NavigationItem("Step Response", ft.Icons.SHOW_CHART_ROUNDED),
-    NavigationItem("Get Model", ft.Icons.VIEW_IN_AR_OUTLINED),
-    NavigationItem("PID Control", ft.Icons.TUNE_ROUNDED),
-    NavigationItem("LQR Control", ft.Icons.ACCOUNT_TREE_OUTLINED),
-)
-
 
 class PydaqNavigationRail(ft.Container):
-    """Navigation rail matching the PyDAQ desktop reference."""
+    """Navigation rail matching the PyDAQ desktop reference.
+
+    ``items`` come from the route registry so menu and routes share one order.
+    """
 
     def __init__(
         self,
+        items: Sequence[NavigationItem],
         on_change: NavigationCallback | None = None,
         selected_index: int = 0,
     ) -> None:
@@ -43,7 +51,7 @@ class PydaqNavigationRail(ft.Container):
         self._destinations: list[tuple[ft.Container, ft.Container, ft.Icon, ft.Text]] = []
         menu_controls = [
             self._create_destination(index, item)
-            for index, item in enumerate(NAVIGATION_ITEMS)
+            for index, item in enumerate(items)
         ]
         super().__init__(
             width=SIDEBAR_WIDTH,
@@ -80,7 +88,7 @@ class PydaqNavigationRail(ft.Container):
     def _create_destination(self, index: int, item: NavigationItem) -> ft.Container:
         selection_bar = ft.Container(width=3, height=30, border_radius=4)
         icon = ft.Icon(item.icon, size=22, color=MUTED)
-        label = ft.Text(item.label, size=14, color=MUTED, no_wrap=True)
+        label = ft.Text(item.label, size=TEXT_LABEL, color=MUTED, no_wrap=True)
         destination = ft.Container(
             height=48,
             margin=ft.Margin.symmetric(horizontal=8),
@@ -109,15 +117,21 @@ class PydaqNavigationRail(ft.Container):
             padding=ft.Padding.only(left=19, right=12, bottom=18),
             content=ft.Column(
                 controls=[
-                    ft.Text("PYDAQ", size=12, color=MUTED, weight=ft.FontWeight.W_500),
-                    ft.Text("Laboratory Data Acquisition", size=11, color="#9AA6B8"),
+                    ft.Text(
+                        "PYDAQ", size=TEXT_SMALL, color=MUTED, weight=ft.FontWeight.W_500
+                    ),
+                    ft.Text(
+                        "Laboratory Data Acquisition",
+                        size=TEXT_XSMALL,
+                        color=MUTED_LIGHT,
+                    ),
                     ft.Container(
                         width=83,
                         height=1.5,
                         bgcolor=ACCENT,
                         margin=ft.Margin.only(top=4, bottom=6),
                     ),
-                    ft.Text("v1.0.0", size=10, color="#A5B0C0"),
+                    ft.Text("v1.0.0", size=TEXT_XXSMALL, color=MUTED_LIGHTER),
                 ],
                 spacing=1,
             ),
@@ -148,7 +162,9 @@ class PydaqNavigationRail(ft.Container):
 class CompactNavigation(ft.PopupMenuButton):
     """Space-efficient navigation used when the sidebar is hidden."""
 
-    def __init__(self, on_change: NavigationCallback) -> None:
+    def __init__(
+        self, items: Sequence[NavigationItem], on_change: NavigationCallback
+    ) -> None:
         super().__init__(
             icon=ft.Icons.MENU_ROUNDED,
             tooltip="Open navigation",
@@ -160,14 +176,15 @@ class CompactNavigation(ft.PopupMenuButton):
                     ),
                     on_click=lambda _event, item_index=index: on_change(item_index),
                 )
-                for index, item in enumerate(NAVIGATION_ITEMS)
+                for index, item in enumerate(items)
             ],
         )
 
 
 def create_sidebar(
+    items: Sequence[NavigationItem],
     on_change: NavigationCallback | None = None,
     selected_index: int = 0,
 ) -> PydaqNavigationRail:
     """Create the standard desktop sidebar."""
-    return PydaqNavigationRail(on_change=on_change, selected_index=selected_index)
+    return PydaqNavigationRail(items, on_change=on_change, selected_index=selected_index)

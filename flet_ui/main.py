@@ -5,7 +5,7 @@ from __future__ import annotations
 import flet as ft
 
 from components.navigation.navigation import CompactNavigation, create_sidebar
-from pages.routes import APP_ROUTES
+from pages.routes import APP_ROUTES, navigation_items
 from theme import BACKGROUND, MOBILE_BREAKPOINT, NAVY, SPACE_LG, app_theme
 
 
@@ -15,13 +15,14 @@ class ApplicationShell(ft.Row):
     def __init__(self, page: ft.Page) -> None:
         self._page = page
         self._page_host = ft.Container(expand=True, content=APP_ROUTES[0].build())
-        self._sidebar = create_sidebar(on_change=self.select_page)
+        menu_items = navigation_items()
+        self._sidebar = create_sidebar(menu_items, on_change=self.select_page)
         self._compact_header = ft.Container(
             visible=False,
             padding=ft.Padding.only(left=12, right=16, top=6, bottom=6),
             content=ft.Row(
                 controls=[
-                    CompactNavigation(on_change=self.select_page),
+                    CompactNavigation(menu_items, on_change=self.select_page),
                     ft.Text("PYDAQ", weight=ft.FontWeight.BOLD, color=NAVY),
                 ],
                 tight=True,
@@ -66,7 +67,7 @@ class ApplicationShell(ft.Row):
 
 def main(page: ft.Page) -> None:
     """Configure the window and mount the application shell."""
-    page.title = "PyDAQ · Get Data"
+    page.title = f"PyDAQ · {APP_ROUTES[0].title}"
     page.theme_mode = ft.ThemeMode.LIGHT
     page.theme = app_theme()
     page.padding = 0
