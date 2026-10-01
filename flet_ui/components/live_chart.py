@@ -32,6 +32,12 @@ class LiveSignalChart(SignalCard):
             plot=self.plot,
             indicators=(self.status, self._rate),
         )
+        self.plot.show_sample()
+
+    def preview(self, config: AcquisitionConfig) -> None:
+        """Fit the chart to ``config`` and redraw the static placeholder curves."""
+        self.reset(config)
+        self.plot.show_sample()
 
     def reset(self, config: AcquisitionConfig) -> None:
         """Clear plotted data and fit axes, legend and rate to a new session."""

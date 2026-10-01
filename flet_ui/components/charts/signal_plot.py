@@ -15,6 +15,7 @@ from components.charts.axes import (
     time_axis_ticks,
     value_axis_ticks,
 )
+from components.charts.sample_signals import sample_signals
 from components.mounting import update_if_mounted
 from theme import (
     BORDER,
@@ -49,6 +50,8 @@ class SignalPlot(ft.Column):
         empty_hint: str = "Start an acquisition to stream data here.",
     ) -> None:
         self._series: dict[str, fch.LineChartData] = {}
+        self._y_range = y_range
+        self._duration_s = duration_s
         self._chart = _build_chart(y_range, y_label, x_label, duration_s)
         self._legend = ft.Row(spacing=SPACE_MD, alignment=ft.MainAxisAlignment.END)
         self._empty_hint = ft.Text(empty_hint, size=TEXT_LABEL, color=MUTED)
@@ -77,6 +80,7 @@ class SignalPlot(ft.Column):
     def set_time_range(self, duration_s: float) -> None:
         """Fit the time axis and its grid to ``[0, duration_s]``."""
         ticks = time_axis_ticks(duration_s)
+        self._duration_s = duration_s
         self._chart.max_x = duration_s
         self._chart.bottom_axis.labels = axis_labels(ticks)
         self._chart.vertical_grid_lines.interval = tick_interval(ticks)
@@ -101,6 +105,11 @@ class SignalPlot(ft.Column):
         for series in self._series.values():
             series.points = []
         self.append(times_s, values)
+
+    def show_sample(self) -> None:
+        """Fill every series with static placeholder curves (UI-only phase)."""
+        times, values = sample_signals(self.series_names, self._duration_s, self._y_range)
+        self.set_points(times, values)
 
     def _apply_series(self, names: Sequence[str]) -> None:
         self._series = {
