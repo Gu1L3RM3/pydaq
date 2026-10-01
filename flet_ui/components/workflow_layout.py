@@ -6,7 +6,8 @@ from typing import Protocol, runtime_checkable
 
 import flet as ft
 
-from theme import SPACE_XS
+from components.mounting import update_if_mounted
+from theme import FADE_IN_MS, SPACE_XS
 
 # Side by side the results column is twice the setup column (lg=8 vs lg=4);
 # stacked, both span the full width.
@@ -43,7 +44,8 @@ class WorkflowLayout(ft.Column):
 
     Below the ``lg`` breakpoint the setup stacks above the results. Side by
     side, the shorter card grows through ``AbsorbsSlack`` so both end on the
-    same line. Pages subclass it or build it directly::
+    same line. The cards stay transparent until both are measured and evened
+    out, so the first visible frame is already final. Pages subclass it or build it directly::
 
         WorkflowLayout(PageHeader("Send Data", "..."), setup_panel, signal_card)
     """
@@ -56,7 +58,7 @@ class WorkflowLayout(ft.Column):
         self._sizes = {"setup": (0.0, 0.0), "results": (0.0, 0.0)}
         # ``ResponsiveRow`` cannot stretch its runs inside a scrolling column, so
         # the heights are evened out from measured sizes instead.
-        content = ft.ResponsiveRow(
+        self._content = ft.ResponsiveRow(
             controls=[
                 ft.Container(
                     col={"xs": 12, "lg": 4},
@@ -72,17 +74,32 @@ class WorkflowLayout(ft.Column):
             spacing=10,
             run_spacing=12,
             vertical_alignment=ft.CrossAxisAlignment.START,
+            # Revealed by ``_reveal``; without this the action visibly jumps
+            # down when the slack lands one layout pass after the first frame.
+            opacity=0,
+            animate_opacity=ft.Animation(FADE_IN_MS, ft.AnimationCurve.EASE_OUT),
         )
         super().__init__(
-            controls=[header, ft.Container(height=SPACE_XS), content],
+            controls=[header, ft.Container(height=SPACE_XS), self._content],
             spacing=6,
             scroll=ft.ScrollMode.AUTO,
             expand=True,
         )
 
+    @property
+    def revealed(self) -> bool:
+        return self._content.opacity == 1
+
     def _record(self, column: str, event: ft.LayoutSizeChangeEvent[ft.Container]) -> None:
-        self._sizes[column] = (event.width, event.height)
+        self.measure(column, event.width, event.height)
+
+    def measure(self, column: str, width: float, height: float) -> None:
+        """Take a rendered size of the ``"setup"`` or ``"results"`` column."""
+        if column not in self._sizes:
+            raise ValueError(f"column must be 'setup' or 'results', not {column!r}")
+        self._sizes[column] = (width, height)
         self._balance()
+        self._reveal()
 
     def _balance(self) -> None:
         setup_width, setup_height = self._sizes["setup"]
@@ -95,6 +112,13 @@ class WorkflowLayout(ft.Column):
         )
         _apply_slack(self._setup, setup_slack)
         _apply_slack(self._results, results_slack)
+
+    def _reveal(self) -> None:
+        both_measured = all(width > 0 for width, _height in self._sizes.values())
+        if self.revealed or not both_measured:
+            return
+        self._content.opacity = 1
+        update_if_mounted(self._content)
 
 
 def _current_slack(card: ft.Control) -> float:

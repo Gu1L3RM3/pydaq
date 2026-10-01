@@ -50,6 +50,8 @@ ACTION_HEIGHT = 44
 CHART_HEIGHT = 500
 SIDEBAR_WIDTH = 208
 MOBILE_BREAKPOINT = 900
+# Fade-in of page content once its layout has settled (see WorkflowLayout).
+FADE_IN_MS = 150
 
 
 def app_theme() -> ft.Theme:

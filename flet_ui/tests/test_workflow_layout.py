@@ -8,7 +8,7 @@ import pytest
 from components.charts.signal_card import SignalCard
 from components.forms.buttons import PrimaryActionButton
 from components.setup.setup_panel import SetupPanel
-from components.workflow_layout import AbsorbsSlack, balanced_slack
+from components.workflow_layout import AbsorbsSlack, WorkflowLayout, balanced_slack
 
 
 def test_shorter_setup_gets_the_difference() -> None:
@@ -47,3 +47,37 @@ def test_signal_card_absorbs_slack_below_the_plot() -> None:
 
     assert isinstance(card, AbsorbsSlack)
     assert (card.slack, card._spacer.height) == (4, 4)
+
+
+def _layout() -> tuple[WorkflowLayout, SetupPanel, SignalCard]:
+    setup = SetupPanel(
+        "Setup", "", sections=(ft.Text("field"),), action=PrimaryActionButton("Go", "Stop")
+    )
+    results = SignalCard("Result", "", plot=ft.Text("plot"))
+    return WorkflowLayout(ft.Text("header"), setup, results), setup, results
+
+
+def test_layout_stays_hidden_until_both_columns_are_measured() -> None:
+    layout, setup, _results = _layout()
+
+    layout.measure("setup", 400, 600)
+
+    assert not layout.revealed
+    assert setup.slack == 0
+
+
+def test_layout_reveals_after_applying_the_slack() -> None:
+    layout, setup, results = _layout()
+
+    layout.measure("setup", 400, 600)
+    layout.measure("results", 800, 634)
+
+    assert layout.revealed
+    assert (setup.slack, results.slack) == (34, 0)
+
+
+def test_layout_rejects_unknown_columns() -> None:
+    layout, _setup, _results = _layout()
+
+    with pytest.raises(ValueError, match="'setup' or 'results'"):
+        layout.measure("sidebar", 100, 100)
