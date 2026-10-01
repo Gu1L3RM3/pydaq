@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import serial
 import serial.tools.list_ports
 import warnings
-from ..guis.error_window_gui import Error_window
 
 try:
     import nidaqmx
@@ -22,20 +21,18 @@ except (ImportError, OSError, Exception):
         RSE = "RSE"
         NRSE = "NRSE"
 
-from PySide6.QtWidgets import QLineEdit
-from PySide6.QtCore import Signal, Qt
+def _show_error_dialog(message: str) -> None:
+    """Show the legacy Qt error dialog.
 
-class ClickableLineEdit(QLineEdit):
+    Imported lazily so domain modules load without PySide6; only the legacy
+    GUI path reaches this.
     """
-    Custom QLineEdit that emits a signal when clicked, 
-    used to trigger ComboBox menus in PYDAQ.
-    """
-    clicked = Signal()
+    from pydaq.legacy_qt.guis.error_window_gui import Error_window
 
-    def mousePressEvent(self, event):
-        if event.button() == Qt.LeftButton:
-            self.clicked.emit()
-        super().mousePressEvent(event)
+    error_w = Error_window()
+    error_w.ui.confirm.setText(message)
+    error_w.exec()
+
 
 class Base:
     """
@@ -57,13 +54,6 @@ class Base:
         self.line = None
         self.line2 = None
         
-    def _range_error(self):
-        """Out of range window"""
-
-        error_w = Error_window()
-        error_w.ui.confirm.setText("Out of range value (check step_max and ao_min)!")
-        error_w.exec()
-
     def _check_path(self):
         """Method to check if path was or not defined by the user"""
 
@@ -466,16 +456,12 @@ class Base:
     def _dim_error(self, message="Dimension mismatch error!"):
         """Generic dimension error window"""
 
-        error_w = Error_window()
-        error_w.ui.confirm.setText(message)
-        error_w.exec()
+        _show_error_dialog(message)
 
     def _check_nidaq_availability(self):
         """Checks if NIDAQ drivers are installed and loaded."""
         if not NIDAQ_AVAILABLE:
-            error_w = Error_window()
-            error_w.ui.confirm.setText("[PYDAQ] NI-DAQmx drivers not found! Please install NI-MAX.")
-            error_w.exec()
+            _show_error_dialog("[PYDAQ] NI-DAQmx drivers not found! Please install NI-MAX.")
             return False
         return True
     

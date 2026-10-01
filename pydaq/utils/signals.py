@@ -1,11 +1,6 @@
-from PySide6.QtCore import QObject, Signal
 from bitarray import bitarray
 from random import randint
 import numpy as np
-
-
-class GuiSignals(QObject):
-    returned = Signal(object)
 
 
 class Signal:
