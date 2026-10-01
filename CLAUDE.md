@@ -76,6 +76,10 @@ Two GUIs share one domain package:
   (`navigation_items()`), so tuple order is the navigation order.
   Reusable controls go in `components/`: `page_header.py` and
   `workflow_layout.py` (header + setup `lg=4` + results `lg=8`) frame a page;
+  side by side, `WorkflowLayout` measures both cards and grows the shorter one
+  through `AbsorbsSlack.set_slack` (`SetupPanel` above its action,
+  `SignalCard` below its plot) so they end on the same line — new result cards
+  should subclass `SignalCard` or implement `set_slack`;
   `forms/` holds fields, choices (`ChoiceTabs`, `ChannelPicker`) and buttons;
   `setup/` composes `DeviceSection`, `TimingSection` and `OutputSection` into a
   `SetupPanel`; `charts/` has `SignalPlot`, `SignalCard` and `StatusBadge`.
@@ -89,8 +93,28 @@ Two GUIs share one domain package:
   to `pydaq.core` in `services/` (`acquisition_form.py` parses form text,
   `acquisition_session.py` runs a source on a worker thread with callbacks).
   Assets are referenced relative to `main.py`'s `assets_dir="assets"`.
-  Only Get Data is implemented, streaming from `SimulatedSource`; other routes
-  use `pages/placeholder.py`.
+  Get Data and Send Data are built (`components/acquisition_panel.py`,
+  `components/send_panel.py`); other routes use `pages/placeholder.py`.
+
+### UI-only phase (current)
+
+The Flet pages are being built **front end only**; the backend gets connected
+in a later phase. Until then:
+
+- Pages must not read devices, `SimulatedSource`, or any other data source,
+  and must not start an `AcquisitionSession` or domain class. The primary
+  action validates the form (`services/*_form.py` → a config/request object)
+  and shows a plain "not available yet" SnackBar; it never streams data.
+- Every chart shows a **static placeholder**: call `SignalPlot.show_sample()`
+  (curves from `components/charts/sample_signals.py`, fitted to the plot's
+  series, duration and value range) when building the chart and after changing
+  its series. Do not invent per-page fake data or generators.
+- Keep the backend bridges intact for the integration phase:
+  `services/acquisition_session.py`, `pydaq/core/`, `pydaq/devices/simulated.py`,
+  and the streaming methods of `LiveSignalChart` (`reset`, `append_batch`,
+  `set_acquiring`, `show_error`) stay, tested but unused by pages.
+- Integration later replaces the SnackBar in each page's start handler with a
+  session start, and swaps `show_sample()` for real batches/results.
 
 ### Remaining migration blockers in the domain layer
 

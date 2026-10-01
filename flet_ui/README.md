@@ -77,7 +77,9 @@ ou baixar componentes do Flutter/Android necessários para o build.
 
 A UI não importa nada de `pydaq.legacy_qt`. Ela usa `pydaq.core` (configuração,
 lotes de amostras, protocolo `AcquisitionSource`) e os adaptadores em
-`pydaq.devices`. Hoje a tela Get Data usa `pydaq.devices.simulated.SimulatedSource`.
+`pydaq.devices`. Por enquanto as telas são só front-end: validam o formulário e
+mostram um gráfico estático de exemplo (`SignalPlot.show_sample()`); a ligação com
+o backend vem numa fase posterior.
 
 Para executar o exemplo de gráfico:
 
