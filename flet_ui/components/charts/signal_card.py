@@ -6,6 +6,7 @@ from collections.abc import Sequence
 
 import flet as ft
 
+from components.mounting import update_if_mounted
 from components.panel import PanelCard
 from theme import BORDER, MUTED, NAVY, SPACE_SM, TEXT_LABEL, TEXT_SECTION_TITLE
 
@@ -58,12 +59,27 @@ class SignalCard(PanelCard):
             spacing=SPACE_SM,
             run_spacing=SPACE_SM,
         )
+        self.slack = 0.0
+        # Empty height added by ``WorkflowLayout`` so the card ends level with
+        # the setup panel.
+        self._spacer = ft.Container(height=0)
         super().__init__(
             ft.Column(
-                controls=[header, ft.Container(height=SPACE_SM), plot], spacing=6
+                controls=[
+                    header,
+                    ft.Container(height=SPACE_SM),
+                    ft.Column(controls=[plot, self._spacer], spacing=0),
+                ],
+                spacing=6,
             ),
             padding=20,
         )
+
+    def set_slack(self, height: float) -> None:
+        """Grow by ``height`` below the plot (see ``WorkflowLayout``)."""
+        self.slack = height
+        self._spacer.height = height
+        update_if_mounted(self._spacer)
 
 
 def _separated(indicators: Sequence[ft.Control]) -> list[ft.Control]:
