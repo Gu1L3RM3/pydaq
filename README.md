@@ -61,6 +61,79 @@ PYDAQ is tested up to Python 3.14. It may run on newer versions, but without gua
 
 ---
 
+## Desenvolvimento, testes e execução
+
+Para trabalhar a partir deste repositório, use Python 3.10 a 3.12. Com
+[uv](https://docs.astral.sh/uv/), a instalação do ambiente é:
+
+```console
+uv sync
+```
+
+Como alternativa, use `pip install -e .` em um ambiente virtual. Os comandos
+abaixo devem ser executados na raiz do repositório.
+
+### Testes
+
+Os testes usam `pytest`. Com `uv`, execute:
+
+```console
+uv run --with pytest pytest pydaq/tests/tests_pydaq.py -q
+```
+
+Com `pip`, instale o executor e rode:
+
+```console
+python -m pip install pytest
+python -m pytest pydaq/tests/tests_pydaq.py -q
+```
+
+Parte da suíte consulta portas seriais e dispositivos NI-DAQ; portanto, para
+passar integralmente ela requer hardware e os drivers correspondentes
+disponíveis. Em uma máquina sem esses recursos, falhas relacionadas a portas
+ou dispositivos não indicam necessariamente uma falha da lógica do pacote.
+
+### Interface desktop (PySide6)
+
+A interface desktop principal do PYDAQ é iniciada pela raiz do repositório:
+
+```console
+uv run python main.py
+```
+
+Ou, em um ambiente criado com `pip`:
+
+```console
+python main.py
+```
+
+### Interface Flet: desktop e Android
+
+A interface em desenvolvimento baseada em Flet fica em
+[`flet_ui/`](flet_ui/README.md). Para executá-la em modo desktop com
+recarga automática:
+
+```console
+cd flet_ui
+uv run flet run -r main.py
+```
+
+Para testá-la em um telefone Android conectado por USB, habilite as
+**Opções do desenvolvedor** e a **Depuração USB**, aceite a autorização do
+computador no telefone e confirme que ele aparece na lista:
+
+```console
+cd flet_ui
+uv run flet devices
+uv run flet run --android main.py
+```
+
+O último comando abre a aplicação Flet no dispositivo para desenvolvimento.
+Para gerar um APK instalável, consulte as instruções e o comando de build no
+[README da interface Flet](flet_ui/README.md).
+
+---
+
 ## Graphical user interface
 
 All main workflows are available from a single graphical interface.

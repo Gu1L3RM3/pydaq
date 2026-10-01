@@ -65,7 +65,7 @@ All files include **inline comments** and **function docstrings** to help you un
 ## Contributing to Interface Design, Fixing Typos, or Adding Widgets
 
 If your contribution involves **interface design**, **layout adjustments**, or **adding new widgets**,
-you’ll be working in the `pydaq/uis/` folder.
+you’ll be working in the `pydaq/legacy_qt/uis/` folder.
 
 The user interfaces are built using [Qt Design Studio](https://doc.qt.io/qtdesignstudio/),
 but you can also use the **Qt Designer** that comes with `PySide6` (recommended).
@@ -87,8 +87,8 @@ but you can also use the **Qt Designer** that comes with `PySide6` (recommended)
 
 | File | Description |
 |------|--------------|
-| `pydaq/uis/PYDAQ_Base.ui` | Layout for the main PyDAQ window. |
-| `pydaq/uis/PYDAQ_get_data_Arduino_Widget.ui` | Layout for the Arduino data acquisition widget. |
+| `pydaq/legacy_qt/uis/PYDAQ_Base.ui` | Layout for the main PyDAQ window. |
+| `pydaq/legacy_qt/uis/PYDAQ_get_data_Arduino_Widget.ui` | Layout for the Arduino data acquisition widget. |
 
 ---
 
@@ -105,7 +105,7 @@ but you can also use the **Qt Designer** that comes with `PySide6` (recommended)
 If you are unsure where to start contributing:
 
 - **For logic improvements:** check the corresponding `.py` file under `pydaq/`.
-- **For UI changes:** explore the `.ui` files in `pydaq/uis/`.
+- **For UI changes:** explore the `.ui` files in `pydaq/legacy_qt/uis/`.
 - **For bug fixes:** look into the related functional area (PID, data acquisition, etc.).
 
 Each function and class is **documented** to make it easier to understand the flow before implementing your changes.
@@ -117,7 +117,9 @@ Each function and class is **documented** to make it easier to understand the fl
 | Area | Folder | What You’ll Find |
 |------|---------|------------------|
 | Core logic | `pydaq/` | Main Python modules for control, data handling, and modeling |
-| Interfaces | `pydaq/uis/` | `.ui` design files for GUI layouts |
-| Programming | `pydaq/guis/` | `.py` files generated from `.ui` layouts |
+| UI-agnostic core | `pydaq/core/`, `pydaq/devices/` | Interfaces and device adapters shared by every UI (no Qt, Flet, or matplotlib) |
+| Flet UI | `flet_ui/` | The new interface; see `flet_ui/README.md` |
+| Interfaces | `pydaq/legacy_qt/uis/` | `.ui` design files for GUI layouts |
+| Programming | `pydaq/legacy_qt/guis/` | Widget behavior for the `.ui` layouts |
 | Utilities | `pydaq/utils/` | Common utility functions and helper methods |
 | Documentation | `docs/` | Project documentation and usage guides |
