@@ -151,3 +151,20 @@ dmypy.json
 
 features.txt
 run.py
+
+# Claude Code and other AI assistants
+# .claude/ (skills, agents, settings, worktrees…) stays local; only the root
+# CLAUDE.md is versioned.
+.claude/
+CLAUDE.local.md
+.mcp.local.json
+.playwright-mcp/
+.aider*
+.cursor/
+.cursorignore
+.windsurf/
+.continue/
+.codeium/
+.codex/
+.gemini/
+.copilot/
