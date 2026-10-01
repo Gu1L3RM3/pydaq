@@ -7,6 +7,7 @@ import flet as ft
 from components.acquisition_panel import AcquisitionSetupPanel
 from components.device_selector import DeviceSelector
 from components.live_chart import LiveSignalChart
+from components.mounting import is_mounted
 from components.page_header import PageHeader
 from components.workflow_layout import WorkflowLayout
 from pages.demo_devices import ACQUISITION_DEVICE_CHOICES
@@ -27,7 +28,7 @@ class GetDataView(WorkflowLayout):
             source,
             on_batch=self._show_batch,
             on_finished=self._show_finished,
-            on_error=self._show_error,
+            on_error=self._show_session_error,
         )
         header = PageHeader(
             "Data acquisition",
@@ -61,7 +62,14 @@ class GetDataView(WorkflowLayout):
         self._panel.set_running(False)
         self._chart.set_acquiring(False)
 
+    def _show_session_error(self, message: str) -> None:
+        self._chart.show_error()
+        self._show_error(message)
+
     def _show_error(self, message: str) -> None:
+        # Session callbacks can arrive after the user navigated away.
+        if not is_mounted(self):
+            return
         self.page.show_dialog(ft.SnackBar(ft.Text(message)))
 
 
