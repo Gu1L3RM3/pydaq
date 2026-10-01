@@ -13,7 +13,7 @@ from the repo root. `pytest` is not a locked dependency, so pass `--with pytest`
 
 ```console
 uv run --with pytest pytest flet_ui/tests -q                    # Flet UI unit tests (no hardware)
-uv run --with pytest pytest flet_ui/tests/test_live_chart.py::<test_name>
+uv run --with pytest pytest flet_ui/tests/test_chart_axes.py::<test_name>
 uv run --with pytest pytest pydaq/tests/tests_pydaq.py -q       # core tests; many need serial ports / NI-DAQmx
 uv run --with pytest pytest pydaq/tests/test_acquisition.py pydaq/tests/test_import_boundaries.py -q  # no hardware
 uv run python main.py                                           # legacy PySide6 GUI
@@ -27,6 +27,7 @@ cd flet_ui && uv run flet devices
 cd flet_ui && uv run flet run --android main.py
 cd flet_ui && uv run flet build apk .             # output in flet_ui/build/apk/
 cd flet_ui && uv run --with flet-charts flet run examples/live_chart_demo.py
+cd flet_ui && uv run flet run examples/components_gallery.py   # shared component kit
 ```
 
 Failures in `pydaq/tests` about missing COM ports or NI devices are
@@ -70,10 +71,20 @@ Two GUIs share one domain package:
   packages). `pydaq` is importable because `uv sync` installs the project.
   `main.py:ApplicationShell` hosts one page at a time and swaps
   sidebar ↔ compact header at `MOBILE_BREAKPOINT`. Pages register in
-  `pages/routes.py:APP_ROUTES` as `AppRoute(title, build)`, where `build` is a
-  zero-arg function returning a control; navigation indexes follow tuple order.
-  Reusable controls go in `components/` (navigation in
-  `components/navigation/navigation.py`), route-level views in `pages/` (a
+  `pages/routes.py:APP_ROUTES` as `AppRoute(title, icon, build)`, where `build`
+  is a zero-arg function returning a control; the menu is derived from it
+  (`navigation_items()`), so tuple order is the navigation order.
+  Reusable controls go in `components/`: `page_header.py` and
+  `workflow_layout.py` (header + setup `lg=4` + results `lg=8`) frame a page;
+  `forms/` holds fields, choices (`ChoiceTabs`, `ChannelPicker`) and buttons;
+  `setup/` composes `DeviceSection`, `TimingSection` and `OutputSection` into a
+  `SetupPanel`; `charts/` has `SignalPlot`, `SignalCard` and `StatusBadge`.
+  Build new pages by composing these (see `examples/components_gallery.py`),
+  using the legacy `.ui` files for the fields each feature needs. Components
+  refresh through `mounting.update_if_mounted`, since Flet 1.0 raises on
+  `control.page` before mount and session callbacks can arrive after
+  navigation. Sample device/channel options live in `pages/demo_devices.py`
+  until device discovery exists. Route-level views go in `pages/` (a
   feature that needs several files becomes `pages/<feature>/`), and the bridge
   to `pydaq.core` in `services/` (`acquisition_form.py` parses form text,
   `acquisition_session.py` runs a source on a worker thread with callbacks).
