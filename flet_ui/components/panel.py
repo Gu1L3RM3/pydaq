@@ -4,7 +4,16 @@ from __future__ import annotations
 
 import flet as ft
 
-from theme import BORDER, CARD_RADIUS, MUTED, NAVY, SPACE_LG, SURFACE
+from theme import (
+    BORDER,
+    CARD_RADIUS,
+    MUTED,
+    NAVY,
+    SPACE_LG,
+    SURFACE,
+    TEXT_LABEL,
+    TEXT_SECTION_TITLE,
+)
 
 
 class PanelCard(ft.Container):
@@ -23,10 +32,15 @@ class PanelCard(ft.Container):
         controls: list[ft.Control] = []
         if title is not None:
             controls.append(
-                ft.Text(title, size=20, weight=ft.FontWeight.BOLD, color=NAVY)
+                ft.Text(
+                    title,
+                    size=TEXT_SECTION_TITLE,
+                    weight=ft.FontWeight.BOLD,
+                    color=NAVY,
+                )
             )
         if description is not None:
-            controls.append(ft.Text(description, size=14, color=MUTED))
+            controls.append(ft.Text(description, size=TEXT_LABEL, color=MUTED))
         if controls:
             controls.append(ft.Container(height=header_gap))
         controls.append(content)
