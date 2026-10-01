@@ -159,3 +159,8 @@ class PathField(ft.Column):
     @property
     def value(self) -> str:
         return self.field.value or ""
+
+    def set_value(self, value: str) -> None:
+        """Show a path chosen elsewhere, e.g. from a file picker."""
+        self.field.value = value
+        update_if_mounted(self.field)
