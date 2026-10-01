@@ -6,13 +6,8 @@ from collections.abc import Callable
 
 import flet as ft
 
-from components.form_controls import (
-    ChoiceTabs,
-    LabeledDropdown,
-    LabeledNumberField,
-    PathField,
-    ToggleSetting,
-)
+from components.forms.choices import ChoiceTabs, ToggleSetting
+from components.forms.fields import LabeledDropdown, LabeledNumberField, PathField
 from components.panel import PanelCard
 from pydaq.core.acquisition import AcquisitionConfig, DeviceFamily
 from services.acquisition_form import build_acquisition_config
@@ -117,8 +112,8 @@ class AcquisitionSetupPanel(PanelCard):
             self._family,
             self.device.value,
             self.channels.value,
-            self.sample_period.field.value or "",
-            self.duration.field.value or "",
+            self.sample_period.value,
+            self.duration.value,
         )
 
     def set_running(self, running: bool) -> None:
